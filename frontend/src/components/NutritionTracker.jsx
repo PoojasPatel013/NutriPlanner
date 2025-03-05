@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { PieChart, BarChart, Plus, Search } from 'lucide-react';
-import './NutritionTracker.css';
+"use client"
+
+import { useState, useEffect } from "react"
+import { PieChart, BarChart, Plus, Search, X } from 'lucide-react'
+import "./NutritionTracker.css"
 
 const NutritionTracker = ({ userData }) => {
-  const [activeView, setActiveView] = useState('daily');
-  const [searchQuery, setSearchQuery] = useState('');
-  const [showAddFoodModal, setShowAddFoodModal] = useState(false);
+  const [activeView, setActiveView] = useState('daily')
+  const [searchQuery, setSearchQuery] = useState('')
+  const [showAddFoodModal, setShowAddFoodModal] = useState(false)
   const [newFood, setNewFood] = useState({
     name: '',
     calories: '',
@@ -14,49 +16,109 @@ const NutritionTracker = ({ userData }) => {
     fat: '',
     servingSize: '',
     mealType: 'breakfast'
-  });
+  })
+  
+  // State for food database and daily food log
+  const [foodDatabase, setFoodDatabase] = useState([])
+  const [dailyFoodLog, setDailyFoodLog] = useState([])
+  const [dailyTotals, setDailyTotals] = useState({ calories: 0, protein: 0, carbs: 0, fat: 0 })
+  const [nutritionHistory, setNutritionHistory] = useState([])
 
-  // Sample food database
-  const foodDatabase = [
-    { id: 1, name: 'Chicken Breast', calories: 165, protein: 31, carbs: 0, fat: 3.6, servingSize: '100g' },
-    { id: 2, name: 'Brown Rice', calories: 112, protein: 2.6, carbs: 23.5, fat: 0.9, servingSize: '100g' },
-    { id: 3, name: 'Avocado', calories: 160, protein: 2, carbs: 8.5, fat: 14.7, servingSize: '100g' },
-    { id: 4, name: 'Salmon', calories: 208, protein: 20, carbs: 0, fat: 13, servingSize: '100g' },
-    { id: 5, name: 'Sweet Potato', calories: 86, protein: 1.6, carbs: 20, fat: 0.1, servingSize: '100g' },
-    { id: 6, name: 'Greek Yogurt', calories: 59, protein: 10, carbs: 3.6, fat: 0.4, servingSize: '100g' },
-    { id: 7, name: 'Spinach', calories: 23, protein: 2.9, carbs: 3.6, fat: 0.4, servingSize: '100g' },
-    { id: 8, name: 'Banana', calories: 89, protein: 1.1, carbs: 22.8, fat: 0.3, servingSize: '100g' },
-    { id: 9, name: 'Almonds', calories: 579, protein: 21.2, carbs: 21.7, fat: 49.9, servingSize: '100g' },
-    { id: 10, name: 'Egg', calories: 155, protein: 12.6, carbs: 1.1, fat: 10.6, servingSize: '100g' },
-  ];
-
-  // Sample daily food log
-  const [dailyFoodLog, setDailyFoodLog] = useState([
-    { id: 1, name: 'Greek Yogurt', calories: 150, protein: 15, carbs: 8, fat: 5, servingSize: '1 cup', mealType: 'breakfast', time: '8:30 AM' },
-    { id: 2, name: 'Banana', calories: 105, protein: 1.3, carbs: 27, fat: 0.4, servingSize: '1 medium', mealType: 'breakfast', time: '8:30 AM' },
-    { id: 3, name: 'Grilled Chicken Salad', calories: 350, protein: 35, carbs: 10, fat: 15, servingSize: '1 bowl', mealType: 'lunch', time: '12:45 PM' },
-    { id: 4, name: 'Apple', calories: 95, protein: 0.5, carbs: 25, fat: 0.3, servingSize: '1 medium', mealType: 'snack', time: '3:30 PM' },
-  ]);
-
-  // Calculate daily totals
-  const dailyTotals = dailyFoodLog.reduce((acc, food) => {
-    acc.calories += food.calories;
-    acc.protein += food.protein;
-    acc.carbs += food.carbs;
-    acc.fat += food.fat;
-    return acc;
-  }, { calories: 0, protein: 0, carbs: 0, fat: 0 });
+  // Load data from localStorage on component mount
+  useEffect(() => {
+    // Load food database
+    const savedFoodDatabase = localStorage.getItem("foodDatabase")
+    if (savedFoodDatabase) {
+      setFoodDatabase(JSON.parse(savedFoodDatabase))
+    } else {
+      // Initialize with some sample foods if no database exists
+      const initialFoods = [
+        { id: 1, name: 'Chicken Breast', calories: 165, protein: 31, carbs: 0, fat: 3.6, servingSize: '100g' },
+        { id: 2, name: 'Brown Rice', calories: 112, protein: 2.6, carbs: 23.5, fat: 0.9, servingSize: '100g' },
+        { id: 3, name: 'Avocado', calories: 160, protein: 2, carbs: 8.5, fat: 14.7, servingSize: '100g' },
+        { id: 4, name: 'Salmon', calories: 208, protein: 20, carbs: 0, fat: 13, servingSize: '100g' },
+        { id: 5, name: 'Sweet Potato', calories: 86, protein: 1.6, carbs: 20, fat: 0.1, servingSize: '100g' },
+      ]
+      setFoodDatabase(initialFoods)
+      localStorage.setItem("foodDatabase", JSON.stringify(initialFoods))
+    }
+    
+    // Load daily food log
+    const today = new Date().toISOString().split('T')[0]
+    const savedFoodLog = localStorage.getItem(`foodLog_${today}`)
+    if (savedFoodLog) {
+      const parsedLog = JSON.parse(savedFoodLog)
+      setDailyFoodLog(parsedLog)
+      
+      // Calculate totals
+      calculateDailyTotals(parsedLog)
+    }
+    
+    // Load nutrition history
+    const savedHistory = localStorage.getItem("nutritionHistory")
+    if (savedHistory) {
+      setNutritionHistory(JSON.parse(savedHistory))
+    }
+  }, [])
+  
+  // Calculate daily totals whenever food log changes
+  const calculateDailyTotals = (foodLog) => {
+    const totals = foodLog.reduce((acc, food) => {
+      acc.calories += food.calories
+      acc.protein += food.protein
+      acc.carbs += food.carbs
+      acc.fat += food.fat
+      return acc
+    }, { calories: 0, protein: 0, carbs: 0, fat: 0 })
+    
+    setDailyTotals(totals)
+    
+    // Update today's meals in localStorage for the dashboard
+    localStorage.setItem("todayMeals", JSON.stringify(foodLog))
+    
+    // Update nutrition history
+    const today = new Date().toISOString().split('T')[0]
+    const updatedHistory = [...nutritionHistory.filter(entry => entry.date !== today), 
+      { date: today, ...totals }
+    ].sort((a, b) => new Date(b.date) - new Date(a.date)).slice(0, 7) // Keep last 7 days
+    
+    setNutritionHistory(updatedHistory)
+    localStorage.setItem("nutritionHistory", JSON.stringify(updatedHistory))
+    
+    // Update weekly progress for the dashboard
+    updateWeeklyProgress(totals)
+  }
+  
+  // Update weekly progress in localStorage
+  const updateWeeklyProgress = (totals) => {
+    const today = new Date().getDay()
+    const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    const todayName = dayNames[today]
+    
+    const savedProgress = localStorage.getItem("weeklyProgress")
+    if (savedProgress) {
+      const progress = JSON.parse(savedProgress)
+      const updatedProgress = progress.map(day => {
+        if (day.day === todayName) {
+          return { ...day, calories: totals.calories }
+        }
+        return day
+      })
+      
+      localStorage.setItem("weeklyProgress", JSON.stringify(updatedProgress))
+    }
+  }
 
   const handleSearchChange = (e) => {
-    setSearchQuery(e.target.value);
-  };
+    setSearchQuery(e.target.value)
+  }
 
   const handleAddFood = () => {
-    setShowAddFoodModal(true);
-  };
+    setShowAddFoodModal(true)
+  }
 
   const handleCloseModal = () => {
-    setShowAddFoodModal(false);
+    setShowAddFoodModal(false)
     setNewFood({
       name: '',
       calories: '',
@@ -65,45 +127,75 @@ const NutritionTracker = ({ userData }) => {
       fat: '',
       servingSize: '',
       mealType: 'breakfast'
-    });
-  };
+    })
+    setSearchQuery('')
+  }
 
   const handleNewFoodChange = (e) => {
-    const { name, value } = e.target;
-    setNewFood(prev => ({ ...prev, [name]: value }));
-  };
+    const { name, value } = e.target
+    setNewFood(prev => ({ ...prev, [name]: value }))
+  }
 
   const handleSubmitFood = (e) => {
-    e.preventDefault();
+    e.preventDefault()
     
     // Add the new food to the daily log
     const newFoodItem = {
       id: Date.now(),
       name: newFood.name,
-      calories: parseFloat(newFood.calories),
-      protein: parseFloat(newFood.protein),
-      carbs: parseFloat(newFood.carbs),
-      fat: parseFloat(newFood.fat),
+      calories: Number.parseFloat(newFood.calories),
+      protein: Number.parseFloat(newFood.protein),
+      carbs: Number.parseFloat(newFood.carbs),
+      fat: Number.parseFloat(newFood.fat),
       servingSize: newFood.servingSize,
       mealType: newFood.mealType,
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    };
+    }
     
-    setDailyFoodLog(prev => [...prev, newFoodItem]);
-    handleCloseModal();
-  };
+    // Add to food database if it's a new food
+    if (!foodDatabase.some(food => food.name.toLowerCase() === newFoodItem.name.toLowerCase())) {
+      const newFoodForDb = { ...newFoodItem }
+      delete newFoodForDb.mealType
+      delete newFoodForDb.time
+      
+      const updatedDatabase = [...foodDatabase, newFoodForDb]
+      setFoodDatabase(updatedDatabase)
+      localStorage.setItem("foodDatabase", JSON.stringify(updatedDatabase))
+    }
+    
+    // Add to daily food log
+    const updatedFoodLog = [...dailyFoodLog, newFoodItem]
+    setDailyFoodLog(updatedFoodLog)
+    
+    // Save to localStorage
+    const today = new Date().toISOString().split('T')[0]
+    localStorage.setItem(`foodLog_${today}`, JSON.stringify(updatedFoodLog))
+    
+    // Update totals
+    calculateDailyTotals(updatedFoodLog)
+    
+    handleCloseModal()
+  }
 
   const handleDeleteFood = (id) => {
-    setDailyFoodLog(prev => prev.filter(food => food.id !== id));
-  };
+    const updatedFoodLog = dailyFoodLog.filter(food => food.id !== id)
+    setDailyFoodLog(updatedFoodLog)
+    
+    // Save to localStorage
+    const today = new Date().toISOString().split('T')[0]
+    localStorage.setItem(`foodLog_${today}`, JSON.stringify(updatedFoodLog))
+    
+    // Update totals
+    calculateDailyTotals(updatedFoodLog)
+  }
 
   const filteredFoods = foodDatabase.filter(food => 
     food.name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  )
 
   const calculateProgress = (current, goal) => {
-    return Math.min(Math.round((current / goal) * 100), 100);
-  };
+    return Math.min(Math.round((current / goal) * 100), 100)
+  }
 
   return (
     <div className="nutrition-tracker">
@@ -254,7 +346,7 @@ const NutritionTracker = ({ userData }) => {
                               onClick={() => handleDeleteFood(food.id)}
                               aria-label="Delete food"
                             >
-                              &times;
+                              <X size={14} />
                             </button>
                           </div>
                         ))}
@@ -271,13 +363,93 @@ const NutritionTracker = ({ userData }) => {
         <div className="nutrition-trends">
           <div className="trends-card">
             <h3 className="trends-title">Weekly Nutrition Trends</h3>
-            <p className="trends-description">
-              This view will show your nutrition trends over time, including calorie intake, 
-              macronutrient distribution, and progress towards your goals.
-            </p>
-            <div className="placeholder-chart">
-              <p>Charts and trends visualization will appear here</p>
-            </div>
+            
+            {nutritionHistory.length > 0 ? (
+              <div className="nutrition-history">
+                <div className="history-chart">
+                  <div className="chart-bars">
+                    {nutritionHistory.slice().reverse().map((day, index) => (
+                      <div key={index} className="history-bar-group">
+                        <div className="history-date">{new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</div>
+                        <div className="history-bars">
+                          <div 
+                            className="history-bar calories-bar" 
+                            style={{ height: `${(day.calories / (userData?.calorieGoal || 2000)) * 100}%` }}
+                            title={`${day.calories} calories`}
+                          ></div>
+                          <div 
+                            className="history-bar protein-bar" 
+                            style={{ height: `${(day.protein / (userData?.nutritionGoals?.protein || 150)) * 100}%` }}
+                            title={`${day.protein}g protein`}
+                          ></div>
+                          <div 
+                            className="history-bar carbs-bar" 
+                            style={{ height: `${(day.carbs / (userData?.nutritionGoals?.carbs || 200)) * 100}%` }}
+                            title={`${day.carbs}g carbs`}
+                          ></div>
+                          <div 
+                            className="history-bar fat-bar" 
+                            style={{ height: `${(day.fat / (userData?.nutritionGoals?.fat || 65)) * 100}%` }}
+                            title={`${day.fat}g fat`}
+                          ></div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  
+                  <div className="chart-legend">
+                    <div className="legend-item">
+                      <div className="legend-color calories-color"></div>
+                      <span>Calories</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color protein-color"></div>
+                      <span>Protein</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color carbs-color"></div>
+                      <span>Carbs</span>
+                    </div>
+                    <div className="legend-item">
+                      <div className="legend-color fat-color"></div>
+                      <span>Fat</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <div className="history-table">
+                  <h4>Nutrition History</h4>
+                  <div className="table-container">
+                    <table>
+                      <thead>
+                        <tr>
+                          <th>Date</th>
+                          <th>Calories</th>
+                          <th>Protein (g)</th>
+                          <th>Carbs (g)</th>
+                          <th>Fat (g)</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {nutritionHistory.map((day, index) => (
+                          <tr key={index}>
+                            <td>{new Date(day.date).toLocaleDateString()}</td>
+                            <td>{day.calories}</td>
+                            <td>{day.protein}</td>
+                            <td>{day.carbs}</td>
+                            <td>{day.fat}</td>
+                          </tr>
+                        ))}
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div className="empty-trends">
+                <p>No nutrition data available yet. Start logging your meals to see trends.</p>
+              </div>
+            )}
           </div>
         </div>
       )}
@@ -307,7 +479,7 @@ const NutritionTracker = ({ userData }) => {
               <div className="search-results">
                 <h4 className="results-title">Search Results</h4>
                 {filteredFoods.length === 0 ? (
-                  <p className="no-results">No foods found. Try a different search term.</p>
+                  <p className="no-results">No foods found. Try a different search term or add a new food.</p>
                 ) : (
                   <div className="food-results-list">
                     {filteredFoods.map(food => (
