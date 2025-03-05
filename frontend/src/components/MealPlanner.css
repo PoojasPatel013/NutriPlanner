@@ -1,305 +1,378 @@
 .meal-planner {
-    width: 100%;
+  width: 100%;
+}
+
+.meal-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.search-container {
+  position: relative;
+  flex: 1;
+  max-width: 400px;
+}
+
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--foreground);
+  opacity: 0.5;
+}
+
+.search-input {
+  width: 100%;
+  padding: 0.5rem 0.5rem 0.5rem 2.5rem;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.875rem;
+  background-color: var(--card);
+  color: var(--card-foreground);
+}
+
+.search-input:focus {
+  outline: 2px solid var(--primary-light);
+  outline-offset: 1px;
+}
+
+.meal-generator {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0;
+}
+
+.generator-card {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  border: 1px solid var(--border);
+}
+
+.generator-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: var(--primary);
+}
+
+.generator-description {
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+.generator-features {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 2rem 0;
+  text-align: left;
+  display: inline-block;
+}
+
+.generator-features li {
+  margin-bottom: 0.75rem;
+  padding-left: 1.5rem;
+  position: relative;
+}
+
+.generator-features li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+  font-weight: bold;
+}
+
+.generate-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+}
+
+.spinning {
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
   }
-  
-  .meal-actions {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    margin-top: 1rem;
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .search-container {
-    position: relative;
-    flex: 1;
-    max-width: 400px;
-  }
-  
-  .search-icon {
-    position: absolute;
-    left: 10px;
-    top: 50%;
-    transform: translateY(-50%);
-    color: var(--foreground);
-    opacity: 0.5;
-  }
-  
-  .search-input {
-    width: 100%;
-    padding: 0.5rem 0.5rem 0.5rem 2.5rem;
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    font-size: 0.875rem;
-    background-color: var(--card);
-    color: var(--card-foreground);
-  }
-  
-  .search-input:focus {
-    outline: 2px solid var(--primary-light);
-    outline-offset: 1px;
-  }
-  
-  .meal-generator {
-    display: flex;
-    justify-content: center;
-    padding: 2rem 0;
-  }
-  
-  .generator-card {
-    background-color: var(--card);
-    border-radius: var(--radius);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    padding: 2rem;
-    max-width: 600px;
-    width: 100%;
-    text-align: center;
-    border: 1px solid var(--border);
-  }
-  
-  .generator-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 1rem;
-    color: var(--primary);
-  }
-  
-  .generator-description {
-    margin-bottom: 1.5rem;
-    font-size: 1rem;
-    opacity: 0.8;
-  }
-  
-  .generator-features {
-    list-style: none;
-    padding: 0;
-    margin: 0 0 2rem 0;
-    text-align: left;
-    display: inline-block;
-  }
-  
-  .generator-features li {
-    margin-bottom: 0.75rem;
-    padding-left: 1.5rem;
-    position: relative;
-  }
-  
-  .generator-features li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--primary);
-    font-weight: bold;
-  }
-  
-  .generate-button {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.75rem 1.5rem;
-    font-size: 1rem;
-  }
-  
-  .spinning {
-    animation: spin 1.5s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  
-  .days-navigation {
-    display: flex;
-    overflow-x: auto;
-    gap: 0.5rem;
-    margin: 1.5rem 0;
-    padding-bottom: 0.5rem;
-  }
-  
-  .day-button {
-    padding: 0.5rem 1rem;
-    border-radius: var(--radius);
-    background-color: var(--card);
-    border: 1px solid var(--border);
-    font-weight: 500;
-    white-space: nowrap;
-    transition: all 0.2s ease;
-  }
-  
-  .day-button.active {
-    background-color: var(--primary);
-    color: white;
-    border-color: var(--primary);
-  }
-  
-  .meal-plan-content {
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-  }
-  
-  .meal-section {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .meal-title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    margin: 0;
-    padding-bottom: 0.5rem;
-    border-bottom: 2px solid var(--primary-light);
-    color: var(--primary);
-  }
-  
-  .meal-card {
-    background-color: var(--card);
-    border-radius: var(--radius);
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    padding: 1.5rem;
-    border: 1px solid var(--border);
-  }
-  
-  .meal-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-  }
-  
-  .meal-name {
-    font-size: 1.125rem;
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .meal-calories {
-    font-weight: 600;
-    color: var(--primary);
-    background-color: rgba(79, 70, 229, 0.1);
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
-    font-size: 0.875rem;
-  }
-  
-  .meal-macros {
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding-bottom: 1rem;
-    border-bottom: 1px solid var(--border);
-  }
-  
-  .macro {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .macro-value {
-    font-size: 1.25rem;
-    font-weight: 700;
-  }
-  
-  .macro-label {
-    font-size: 0.75rem;
-    color: var(--foreground);
-    opacity: 0.7;
-  }
-  
+}
+
+.days-navigation {
+  display: flex;
+  overflow-x: auto;
+  gap: 0.5rem;
+  margin: 1.5rem 0;
+  padding-bottom: 0.5rem;
+}
+
+.day-button {
+  padding: 0.5rem 1rem;
+  border-radius: var(--radius);
+  background-color: var(--card);
+  border: 1px solid var(--border);
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all 0.2s ease;
+}
+
+.day-button.active {
+  background-color: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+.meal-plan-content {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.meal-section {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meal-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--primary-light);
+  color: var(--primary);
+}
+
+.meal-card {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+}
+
+.meal-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+.meal-name {
+  font-size: 1.125rem;
+  font-weight: 600;
+  margin: 0;
+}
+
+.meal-calories {
+  font-weight: 600;
+  color: var(--primary);
+  background-color: rgba(79, 70, 229, 0.1);
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  font-size: 0.875rem;
+}
+
+.meal-macros {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.macro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.macro-value {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+
+.macro-label {
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.meal-details {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+}
+
+.details-title {
+  font-size: 0.875rem;
+  font-weight: 600;
+  margin: 0 0 0.75rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.ingredients-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.ingredients-list li {
+  margin-bottom: 0.5rem;
+  font-size: 0.875rem;
+  padding-left: 1.25rem;
+  position: relative;
+}
+
+.ingredients-list li::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: var(--primary);
+}
+
+.instructions-text {
+  font-size: 0.875rem;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.snacks-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+}
+
+.snack-card {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  padding: 1rem;
+  border: 1px solid var(--border);
+  position: relative;
+}
+
+.snack-name {
+  font-size: 1rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem 0;
+}
+
+.snack-macros {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.snack-calories {
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.snack-macro-details {
+  display: flex;
+  gap: 0.75rem;
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.snack-actions {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  display: flex;
+  gap: 0.25rem;
+}
+
+.edit-snack-btn,
+.delete-snack-btn {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  color: var(--foreground);
+  opacity: 0.7;
+  transition: all 0.2s ease;
+}
+
+.edit-snack-btn:hover {
+  background-color: var(--primary-light);
+  color: white;
+  opacity: 1;
+}
+
+.delete-snack-btn:hover {
+  background-color: #ef4444;
+  color: white;
+  opacity: 1;
+}
+
+.meal-edit-form {
+  background-color: var(--card);
+  border-radius: var(--radius);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  padding: 1.5rem;
+  border: 1px solid var(--border);
+  margin-top: 1rem;
+}
+
+.edit-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  margin: 0 0 1.5rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.edit-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+}
+
+@media (max-width: 1024px) {
   .meal-details {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.5rem;
+    grid-template-columns: 1fr;
   }
-  
-  .details-title {
-    font-size: 0.875rem;
-    font-weight: 600;
-    margin: 0 0 0.75rem 0;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    color: var(--foreground);
-    opacity: 0.7;
-  }
-  
-  .ingredients-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-  
-  .ingredients-list li {
-    margin-bottom: 0.5rem;
-    font-size: 0.875rem;
-    padding-left: 1.25rem;
-    position: relative;
-  }
-  
-  .ingredients-list li::before {
-    content: "•";
-    position: absolute;
-    left: 0;
-    color: var(--primary);
-  }
-  
-  .instructions-text {
-    font-size: 0.875rem;
-    line-height: 1.6;
-    margin: 0;
-  }
-  
-  .snacks-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 1rem;
-  }
-  
-  .snack-card {
-    background-color: var(--card);
-    border-radius: var(--radius);
-    padding: 1rem;
-    border: 1px solid var(--border);
-  }
-  
-  .snack-name {
-    font-size: 1rem;
-    font-weight: 600;
-    margin: 0 0 0.5rem 0;
-  }
-  
-  .snack-macros {
-    display: flex;
+}
+
+@media (max-width: 768px) {
+  .meal-actions {
     flex-direction: column;
-    gap: 0.5rem;
+    align-items: stretch;
   }
-  
-  .snack-calories {
-    font-weight: 600;
-    color: var(--primary);
+
+  .search-container {
+    max-width: none;
   }
-  
-  .snack-macro-details {
-    display: flex;
-    gap: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--foreground);
-    opacity: 0.7;
-  }
-  
-  @media (max-width: 768px) {
-    .meal-details {
-      grid-template-columns: 1fr;
-    }
-    
-    .meal-actions {
-      flex-direction: column;
-      align-items: stretch;
-    }
-    
-    .search-container {
-      max-width: none;
-    }
-  }
-  
+}

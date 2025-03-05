@@ -19,7 +19,7 @@ const Header = ({ userData, onLogout }) => {
   return (
     <header className="header">
       <div className="header-container">
-        <h1 className="header-title">NutriPlan AI</h1>
+        <h1 className="header-title">NutriPlan - Everyday Meal Planner</h1>
         
         <div className="header-actions">
           <button 
