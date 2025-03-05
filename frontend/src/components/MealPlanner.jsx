@@ -669,7 +669,7 @@ const MealPlanner = ({ userData, setUserData }) => {
               </button>
             </div>
             <div className="snacks-container">
-              {mealPlan[selectedDay].snacks.map((snack, index) => (
+              {(mealPlan[selectedDay]?.snacks||[]).map((snack, index) => (
                 <div key={index} className="snack-card">
                   <div className="snack-actions">
                     <button className="edit-snack-btn" onClick={() => handleEditSnack(index)}>
