@@ -1,0 +1,141 @@
+.sidebar {
+    width: 250px;
+    background-color: var(--card);
+    border-right: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+  }
+  
+  .sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .sidebar-logo {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--primary);
+    margin: 0;
+  }
+  
+  .sidebar-nav {
+    flex: 1;
+    padding: 1rem 0;
+    overflow-y: auto;
+  }
+  
+  .sidebar-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar-menu-item {
+    margin-bottom: 0.25rem;
+  }
+  
+  .sidebar-menu-button {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.75rem 1.5rem;
+    border: none;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    border-radius: 0;
+  }
+  
+  .sidebar-menu-button:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+  }
+  
+  .dark .sidebar-menu-button:hover {
+    background-color: rgba(255, 255, 255, 0.05);
+  }
+  
+  .sidebar-menu-button.active {
+    background-color: var(--primary-light);
+    color: white;
+  }
+  
+  .sidebar-menu-icon {
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+  }
+  
+  .sidebar-upgrade {
+    background: linear-gradient(to right, var(--primary-light), var(--primary-dark));
+    border-radius: var(--radius);
+    padding: 1rem;
+    color: white;
+    text-align: center;
+  }
+  
+  .sidebar-upgrade-text {
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .sidebar-upgrade-button {
+    background-color: white;
+    color: var(--primary-dark);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0.5rem 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+  
+  .sidebar-upgrade-button:hover {
+    opacity: 0.9;
+  }
+  
+  @media (max-width: 768px) {
+    .sidebar {
+      width: 70px;
+    }
+    
+    .sidebar-logo {
+      font-size: 1.25rem;
+    }
+    
+    .sidebar-header {
+      padding: 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    
+    .sidebar-menu-button {
+      padding: 0.75rem;
+      justify-content: center;
+    }
+    
+    .sidebar-menu-label {
+      display: none;
+    }
+    
+    .sidebar-menu-icon {
+      margin-right: 0;
+    }
+    
+    .sidebar-footer {
+      display: none;
+    }
+  }
+  

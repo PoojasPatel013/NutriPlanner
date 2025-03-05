@@ -1,0 +1,211 @@
+.settings-view {
+    width: 100%;
+  }
+  
+  .settings-container {
+    display: grid;
+    grid-template-columns: 250px 1fr;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+  }
+  
+  .settings-sidebar {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1rem;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+  
+  .settings-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    background-color: transparent;
+    border: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+  
+  .settings-tab:hover {
+    background-color: var(--background);
+  }
+  
+  .settings-tab.active {
+    background-color: var(--primary);
+    color: white;
+  }
+  
+  .settings-content {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  
+  .settings-section {
+    margin-bottom: 2rem;
+  }
+  
+  .settings-section-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 1.25rem 0;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .form-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  
+  .checkbox-group {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+  
+  .checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+  }
+  
+  .toggle-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .toggle-label {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .toggle-description {
+    font-size: 0.75rem;
+    color: var(--foreground);
+    opacity: 0.7;
+    margin-top: 0.25rem;
+  }
+  
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 48px;
+    height: 24px;
+  }
+  
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+  
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--border);
+    transition: 0.4s;
+    border-radius: 24px;
+  }
+  
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+  }
+  
+  input:checked + .toggle-slider {
+    background-color: var(--primary);
+  }
+  
+  input:checked + .toggle-slider:before {
+    transform: translateX(24px);
+  }
+  
+  .account-actions {
+    margin-top: 2rem;
+  }
+  
+  .danger-btn {
+    color: #ef4444;
+    border-color: #ef4444;
+  }
+  
+  .danger-btn:hover {
+    background-color: rgba(239, 68, 68, 0.1);
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--border);
+  }
+  
+  .save-button {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  
+  .success-message {
+    background-color: #10b981;
+    color: white;
+    padding: 0.75rem 1rem;
+    border-radius: var(--radius);
+    margin-bottom: 1.5rem;
+    font-weight: 500;
+  }
+  
+  @media (max-width: 768px) {
+    .settings-container {
+      grid-template-columns: 1fr;
+    }
+    
+    .settings-sidebar {
+      display: flex;
+      flex-direction: row;
+      overflow-x: auto;
+      padding: 0.5rem;
+    }
+    
+    .settings-tab {
+      white-space: nowrap;
+    }
+    
+    .form-row {
+      grid-template-columns: 1fr;
+    }
+    
+    .checkbox-group {
+      grid-template-columns: 1fr;
+    }
+  }
+  

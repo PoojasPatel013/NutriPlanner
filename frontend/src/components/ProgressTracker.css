@@ -1,0 +1,205 @@
+.progress-tracker {
+    width: 100%;
+  }
+  
+  .progress-summary {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin: 1.5rem 0;
+  }
+  
+  .summary-card {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  
+  .summary-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+  }
+  
+  .weight-icon {
+    background-color: #3b82f6;
+  }
+  
+  .waist-icon {
+    background-color: #10b981;
+  }
+  
+  .calories-icon {
+    background-color: #f59e0b;
+  }
+  
+  .summary-content {
+    flex: 1;
+  }
+  
+  .summary-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin: 0 0 0.5rem 0;
+    color: var(--foreground);
+    opacity: 0.7;
+  }
+  
+  .summary-value {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+  }
+  
+  .summary-change {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    font-size: 0.75rem;
+  }
+  
+  .positive-change {
+    color: #10b981;
+  }
+  
+  .negative-change {
+    color: #ef4444;
+  }
+  
+  .summary-note {
+    font-size: 0.75rem;
+    color: var(--foreground);
+    opacity: 0.7;
+  }
+  
+  .progress-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow-x: auto;
+  }
+  
+  .tab-button {
+    padding: 0.75rem 1.5rem;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    font-weight: 500;
+    color: var(--foreground);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  
+  .tab-button.active {
+    color: var(--primary);
+    border-bottom-color: var(--primary);
+  }
+  
+  .progress-content {
+    margin-bottom: 2rem;
+  }
+  
+  .weight-history,
+  .measurements-history,
+  .nutrition-history {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+  }
+  
+  .chart-container {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+  }
+  
+  .chart-placeholder {
+    height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background);
+    border-radius: var(--radius);
+    border: 1px dashed var(--border);
+  }
+  
+  .data-table {
+    background-color: var(--card);
+    border-radius: var(--radius);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .table-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    margin: 0 0 1rem 0;
+  }
+  
+  .table-container {
+    overflow-x: auto;
+    margin-bottom: 1rem;
+    flex: 1;
+  }
+  
+  .progress-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .progress-table th,
+  .progress-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+  
+  .progress-table th {
+    font-weight: 600;
+    font-size: 0.875rem;
+    color: var(--foreground);
+    opacity: 0.7;
+  }
+  
+  .progress-table td {
+    font-size: 0.875rem;
+  }
+  
+  .table-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 1rem;
+  }
+  
+  @media (max-width: 1024px) {
+    .progress-summary {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .progress-summary {
+      grid-template-columns: 1fr;
+    }
+    
+    .weight-history,
+    .measurements-history,
+    .nutrition-history {
+      grid-template-columns: 1fr;
+    }
+  }
+  
