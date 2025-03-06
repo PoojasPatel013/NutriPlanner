@@ -1,7 +1,5 @@
-"use client"
-
 import { useState, useEffect } from "react"
-import { Search, Plus, RefreshCw, Save, Trash2 } from "lucide-react"
+import { Search, Plus, RefreshCw, Save, Trash2, Calendar, Share2 } from "lucide-react"
 import { generateMealPlan } from "../utils/ai-service"
 import "./MealPlanner.css"
 
@@ -12,6 +10,10 @@ const MealPlanner = ({ userData, setUserData }) => {
   const [selectedDay, setSelectedDay] = useState("monday")
   const [customMealPlan, setCustomMealPlan] = useState({})
   const [editingMeal, setEditingMeal] = useState(null)
+  const [showShareModal, setShowShareModal] = useState(false)
+  const [shareEmail, setShareEmail] = useState("")
+  const [showExportModal, setShowExportModal] = useState(false)
+  const [exportFormat, setExportFormat] = useState("pdf")
 
   // Load saved meal plan from localStorage on component mount
   useEffect(() => {
@@ -27,161 +29,97 @@ const MealPlanner = ({ userData, setUserData }) => {
       // In a real app, this would call the Gemini API
       const generatedPlan = await generateMealPlan(userData)
 
-      // If no plan is returned from the API, create a basic structure
-      const newPlan = generatedPlan || {
-        monday: {
-          breakfast: {
-            name: "Greek Yogurt Parfait",
-            calories: 320,
-            protein: 22,
-            carbs: 40,
-            fat: 8,
-            ingredients: ["Greek yogurt", "Mixed berries", "Granola", "Honey"],
-            instructions: "Layer yogurt, berries, and granola in a bowl. Drizzle with honey.",
-          },
-          lunch: {
-            name: "Quinoa Salad Bowl",
-            calories: 450,
-            protein: 15,
-            carbs: 65,
-            fat: 15,
-            ingredients: [
-              "Quinoa",
-              "Cucumber",
-              "Cherry tomatoes",
-              "Avocado",
-              "Feta cheese",
-              "Olive oil",
-              "Lemon juice",
+      // Create a more comprehensive meal plan with all days of the week
+      const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
+      const newPlan = {}
+
+      // Use the generated plan for the first few days, then create template data for remaining days
+      daysOfWeek.forEach((day, index) => {
+        if (generatedPlan && generatedPlan[day]) {
+          newPlan[day] = generatedPlan[day]
+        } else {
+          // Create template data for this day
+          newPlan[day] = {
+            breakfast: {
+              name: `${day.charAt(0).toUpperCase() + day.slice(1)} Breakfast`,
+              calories: 300 + Math.floor(Math.random() * 100),
+              protein: 15 + Math.floor(Math.random() * 10),
+              carbs: 30 + Math.floor(Math.random() * 15),
+              fat: 8 + Math.floor(Math.random() * 7),
+              ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3"],
+              instructions: "Instructions for preparing this meal will go here.",
+            },
+            lunch: {
+              name: `${day.charAt(0).toUpperCase() + day.slice(1)} Lunch`,
+              calories: 400 + Math.floor(Math.random() * 100),
+              protein: 25 + Math.floor(Math.random() * 10),
+              carbs: 40 + Math.floor(Math.random() * 15),
+              fat: 12 + Math.floor(Math.random() * 8),
+              ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3", "Ingredient 4"],
+              instructions: "Instructions for preparing this meal will go here.",
+            },
+            dinner: {
+              name: `${day.charAt(0).toUpperCase() + day.slice(1)} Dinner`,
+              calories: 500 + Math.floor(Math.random() * 100),
+              protein: 30 + Math.floor(Math.random() * 10),
+              carbs: 45 + Math.floor(Math.random() * 15),
+              fat: 15 + Math.floor(Math.random() * 10),
+              ingredients: ["Ingredient 1", "Ingredient 2", "Ingredient 3", "Ingredient 4", "Ingredient 5"],
+              instructions: "Instructions for preparing this meal will go here.",
+            },
+            snacks: [
+              {
+                name: `${day.charAt(0).toUpperCase() + day.slice(1)} Snack 1`,
+                calories: 150 + Math.floor(Math.random() * 50),
+                protein: 5 + Math.floor(Math.random() * 5),
+                carbs: 15 + Math.floor(Math.random() * 10),
+                fat: 5 + Math.floor(Math.random() * 5),
+              },
+              {
+                name: `${day.charAt(0).toUpperCase() + day.slice(1)} Snack 2`,
+                calories: 120 + Math.floor(Math.random() * 50),
+                protein: 4 + Math.floor(Math.random() * 5),
+                carbs: 12 + Math.floor(Math.random() * 10),
+                fat: 4 + Math.floor(Math.random() * 5),
+              },
             ],
-            instructions:
-              "Mix cooked quinoa with chopped vegetables. Add feta cheese and dress with olive oil and lemon juice.",
-          },
-          dinner: {
-            name: "Baked Salmon with Roasted Vegetables",
-            calories: 520,
-            protein: 35,
-            carbs: 30,
-            fat: 25,
-            ingredients: ["Salmon fillet", "Broccoli", "Bell peppers", "Zucchini", "Olive oil", "Garlic", "Lemon"],
-            instructions:
-              "Season salmon with garlic, salt, and pepper. Bake at 400°F for 15 minutes. Roast vegetables with olive oil.",
-          },
-          snacks: [
-            {
-              name: "Apple with Almond Butter",
-              calories: 200,
-              protein: 5,
-              carbs: 25,
-              fat: 10,
-            },
-            {
-              name: "Protein Shake",
-              calories: 150,
-              protein: 20,
-              carbs: 5,
-              fat: 3,
-            },
-          ],
-        },
-        tuesday: {
-          breakfast: {
-            name: "Veggie Omelette",
-            calories: 350,
-            protein: 25,
-            carbs: 10,
-            fat: 22,
-            ingredients: ["Eggs", "Spinach", "Bell peppers", "Onion", "Feta cheese"],
-            instructions: "Whisk eggs, pour into a hot pan. Add vegetables and cheese. Fold and cook until set.",
-          },
-          lunch: {
-            name: "Turkey Avocado Wrap",
-            calories: 420,
-            protein: 30,
-            carbs: 35,
-            fat: 18,
-            ingredients: ["Whole grain wrap", "Turkey breast", "Avocado", "Lettuce", "Tomato", "Greek yogurt"],
-            instructions:
-              "Spread Greek yogurt on wrap. Layer with turkey, avocado, lettuce, and tomato. Roll up and enjoy.",
-          },
-          dinner: {
-            name: "Lentil Curry with Brown Rice",
-            calories: 480,
-            protein: 20,
-            carbs: 70,
-            fat: 12,
-            ingredients: ["Lentils", "Brown rice", "Onion", "Garlic", "Curry powder", "Coconut milk", "Spinach"],
-            instructions:
-              "Sauté onion and garlic. Add lentils, curry powder, and coconut milk. Simmer until lentils are tender. Serve over brown rice.",
-          },
-          snacks: [
-            {
-              name: "Greek Yogurt with Berries",
-              calories: 180,
-              protein: 15,
-              carbs: 20,
-              fat: 2,
-            },
-            {
-              name: "Mixed Nuts",
-              calories: 170,
-              protein: 6,
-              carbs: 5,
-              fat: 15,
-            },
-          ],
-        },
-        wednesday: {
-          breakfast: {
-            name: "Overnight Oats",
-            calories: 350,
-            protein: 15,
-            carbs: 55,
-            fat: 10,
-            ingredients: ["Rolled oats", "Almond milk", "Chia seeds", "Banana", "Peanut butter"],
-            instructions: "Mix oats, milk, and chia seeds. Refrigerate overnight. Top with banana and peanut butter.",
-          },
-          lunch: {
-            name: "Mediterranean Bowl",
-            calories: 420,
-            protein: 18,
-            carbs: 45,
-            fat: 20,
-            ingredients: ["Chickpeas", "Cucumber", "Tomatoes", "Olives", "Feta", "Olive oil", "Lemon juice"],
-            instructions: "Combine all ingredients in a bowl. Drizzle with olive oil and lemon juice.",
-          },
-          dinner: {
-            name: "Grilled Chicken with Sweet Potato",
-            calories: 480,
-            protein: 40,
-            carbs: 35,
-            fat: 15,
-            ingredients: ["Chicken breast", "Sweet potato", "Broccoli", "Olive oil", "Herbs"],
-            instructions: "Grill chicken with herbs. Roast sweet potato and broccoli with olive oil.",
-          },
-          snacks: [
-            {
-              name: "Protein Bar",
-              calories: 200,
-              protein: 15,
-              carbs: 20,
-              fat: 8,
-            },
-            {
-              name: "Carrot Sticks with Hummus",
-              calories: 150,
-              protein: 5,
-              carbs: 15,
-              fat: 7,
-            },
-          ],
-        },
-      }
+          }
+        }
+      })
 
       setMealPlan(newPlan)
 
       // Save to localStorage
       localStorage.setItem("mealPlan", JSON.stringify(newPlan))
+
+      // Also update today's meals in the dashboard
+      const today = new Date().getDay()
+      const dayNames = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+      const todayName = dayNames[today]
+
+      if (newPlan[todayName]) {
+        const todayMeals = [
+          {
+            ...newPlan[todayName].breakfast,
+            id: Date.now(),
+            time: "8:00 AM",
+            items: newPlan[todayName].breakfast.ingredients,
+          },
+          {
+            ...newPlan[todayName].lunch,
+            id: Date.now() + 1,
+            time: "12:30 PM",
+            items: newPlan[todayName].lunch.ingredients,
+          },
+          {
+            ...newPlan[todayName].dinner,
+            id: Date.now() + 2,
+            time: "7:00 PM",
+            items: newPlan[todayName].dinner.ingredients,
+          },
+        ]
+        localStorage.setItem("todayMeals", JSON.stringify(todayMeals))
+      }
     } catch (error) {
       console.error("Error generating meal plan:", error)
       alert("Failed to generate meal plan. Please try again.")
@@ -192,6 +130,28 @@ const MealPlanner = ({ userData, setUserData }) => {
 
   const handleSearchChange = (e) => {
     setSearchQuery(e.target.value)
+  }
+
+  const filteredMealPlan = () => {
+    if (!mealPlan) return {}
+    if (!searchQuery) return mealPlan
+
+    const filtered = {}
+
+    Object.keys(mealPlan).forEach((day) => {
+      const dayPlan = mealPlan[day]
+      const matchesSearch =
+        dayPlan.breakfast.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dayPlan.lunch.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dayPlan.dinner.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        dayPlan.snacks.some((snack) => snack.name.toLowerCase().includes(searchQuery.toLowerCase()))
+
+      if (matchesSearch) {
+        filtered[day] = dayPlan
+      }
+    })
+
+    return Object.keys(filtered).length > 0 ? filtered : mealPlan
   }
 
   const handleDayChange = (day) => {
@@ -216,10 +176,10 @@ const MealPlanner = ({ userData, setUserData }) => {
     // Update the specific meal
     updatedMealPlan[editingMeal.day][editingMeal.type] = {
       name: editingMeal.name,
-      calories: editingMeal.calories,
-      protein: editingMeal.protein,
-      carbs: editingMeal.carbs,
-      fat: editingMeal.fat,
+      calories: Number.parseInt(editingMeal.calories),
+      protein: Number.parseInt(editingMeal.protein),
+      carbs: Number.parseInt(editingMeal.carbs),
+      fat: Number.parseInt(editingMeal.fat),
       ingredients: editingMeal.ingredients,
       instructions: editingMeal.instructions,
     }
@@ -230,6 +190,9 @@ const MealPlanner = ({ userData, setUserData }) => {
 
     // Clear editing state
     setEditingMeal(null)
+
+    // Show success message
+    alert("Meal updated successfully!")
   }
 
   const handleCancelEdit = () => {
@@ -245,6 +208,28 @@ const MealPlanner = ({ userData, setUserData }) => {
     // Convert comma-separated string to array
     const ingredients = e.target.value.split(",").map((item) => item.trim())
     setEditingMeal((prev) => ({ ...prev, ingredients }))
+  }
+
+  const handleCreateMeal = () => {
+    if (!mealPlan) return
+
+    // Create a new meal in the selected day
+    const newMeal = {
+      name: "New Custom Meal",
+      calories: 400,
+      protein: 20,
+      carbs: 40,
+      fat: 15,
+      ingredients: ["Add your ingredients"],
+      instructions: "Add your instructions",
+    }
+
+    // Set it for editing
+    setEditingMeal({
+      type: "custom",
+      day: selectedDay,
+      ...newMeal,
+    })
   }
 
   const handleAddSnack = () => {
@@ -301,10 +286,10 @@ const MealPlanner = ({ userData, setUserData }) => {
     // Update the specific snack
     updatedMealPlan[editingMeal.day].snacks[editingMeal.index] = {
       name: editingMeal.name,
-      calories: editingMeal.calories,
-      protein: editingMeal.protein,
-      carbs: editingMeal.carbs,
-      fat: editingMeal.fat,
+      calories: Number.parseInt(editingMeal.calories),
+      protein: Number.parseInt(editingMeal.protein),
+      carbs: Number.parseInt(editingMeal.carbs),
+      fat: Number.parseInt(editingMeal.fat),
     }
 
     // Update state and localStorage
@@ -313,6 +298,108 @@ const MealPlanner = ({ userData, setUserData }) => {
 
     // Clear editing state
     setEditingMeal(null)
+
+    // Show success message
+    alert("Snack updated successfully!")
+  }
+
+  const handleSaveCustomMeal = () => {
+    if (!editingMeal || editingMeal.type !== "custom") return
+
+    // Ask which meal type this should replace
+    const mealType = window.prompt("Which meal should this replace? (breakfast, lunch, dinner)", "breakfast")
+
+    if (!mealType || !["breakfast", "lunch", "dinner"].includes(mealType.toLowerCase())) {
+      alert("Invalid meal type. Please choose breakfast, lunch, or dinner.")
+      return
+    }
+
+    // Create a copy of the current meal plan
+    const updatedMealPlan = { ...mealPlan }
+
+    // Update the specific meal
+    updatedMealPlan[editingMeal.day][mealType.toLowerCase()] = {
+      name: editingMeal.name,
+      calories: Number.parseInt(editingMeal.calories),
+      protein: Number.parseInt(editingMeal.protein),
+      carbs: Number.parseInt(editingMeal.carbs),
+      fat: Number.parseInt(editingMeal.fat),
+      ingredients: editingMeal.ingredients,
+      instructions: editingMeal.instructions,
+    }
+
+    // Update state and localStorage
+    setMealPlan(updatedMealPlan)
+    localStorage.setItem("mealPlan", JSON.stringify(updatedMealPlan))
+
+    // Clear editing state
+    setEditingMeal(null)
+
+    // Show confirmation
+    alert(`Your custom meal has been saved as ${mealType}!`)
+  }
+
+  const handleShareMealPlan = () => {
+    setShowShareModal(true)
+  }
+
+  const handleExportMealPlan = () => {
+    setShowExportModal(true)
+  }
+
+  const handleShareSubmit = (e) => {
+    e.preventDefault()
+
+    // In a real app, this would send the meal plan to the specified email
+    alert(`Meal plan shared with ${shareEmail}!`)
+
+    // Reset form and close modal
+    setShareEmail("")
+    setShowShareModal(false)
+  }
+
+  const handleExportSubmit = (e) => {
+    e.preventDefault()
+
+    // In a real app, this would generate and download the meal plan in the specified format
+    alert(`Meal plan exported as ${exportFormat.toUpperCase()}!`)
+
+    // Close modal
+    setShowExportModal(false)
+  }
+
+  const handleAddToCalendar = () => {
+    // In a real app, this would add the meal plan to the user's calendar
+
+    // Get the current date
+    const today = new Date()
+    const dayOfWeek = today.getDay() // 0 = Sunday, 1 = Monday, etc.
+    const daysOfWeek = ["sunday", "monday", "tuesday", "wednesday", "thursday", "friday", "saturday"]
+
+    // Create calendar entries for the next 7 days
+    const calendarData = {}
+
+    for (let i = 0; i < 7; i++) {
+      const date = new Date(today)
+      date.setDate(today.getDate() + i)
+      const dateKey = date.toISOString().split("T")[0]
+
+      const dayName = daysOfWeek[(dayOfWeek + i) % 7]
+
+      if (mealPlan && mealPlan[dayName]) {
+        calendarData[dateKey] = mealPlan[dayName]
+      }
+    }
+
+    // Save to localStorage for the calendar component to use
+    const existingCalendarData = localStorage.getItem("mealPlanCalendar")
+    const updatedCalendarData = existingCalendarData
+      ? { ...JSON.parse(existingCalendarData), ...calendarData }
+      : calendarData
+
+    localStorage.setItem("mealPlanCalendar", JSON.stringify(updatedCalendarData))
+
+    alert("Meal plan added to calendar!")
   }
 
   // If no meal plan is generated yet, show the generator UI
@@ -390,6 +477,18 @@ const MealPlanner = ({ userData, setUserData }) => {
               onChange={handleSearchChange}
             />
           </div>
+          <button className="btn btn-primary" onClick={handleCreateMeal}>
+            <Plus size={18} />
+            Create Custom Meal
+          </button>
+          <button className="btn btn-outline" onClick={handleAddToCalendar}>
+            <Calendar size={18} />
+            Add to Calendar
+          </button>
+          <button className="btn btn-outline" onClick={handleShareMealPlan}>
+            <Share2 size={18} />
+            Share
+          </button>
           <button className="btn btn-outline" onClick={() => setMealPlan(null)}>
             Create New Plan
           </button>
@@ -397,7 +496,7 @@ const MealPlanner = ({ userData, setUserData }) => {
       </div>
 
       <div className="days-navigation">
-        {Object.keys(mealPlan).map((day) => (
+        {Object.keys(filteredMealPlan()).map((day) => (
           <button
             key={day}
             className={`day-button ${selectedDay === day ? "active" : ""}`}
@@ -522,7 +621,13 @@ const MealPlanner = ({ userData, setUserData }) => {
             </button>
             <button
               className="btn btn-primary"
-              onClick={editingMeal.type === "snack" ? handleSaveSnack : handleSaveMeal}
+              onClick={
+                editingMeal.type === "snack"
+                  ? handleSaveSnack
+                  : editingMeal.type === "custom"
+                    ? handleSaveCustomMeal
+                    : handleSaveMeal
+              }
             >
               <Save size={16} />
               Save Changes
@@ -669,7 +774,7 @@ const MealPlanner = ({ userData, setUserData }) => {
               </button>
             </div>
             <div className="snacks-container">
-              {(mealPlan[selectedDay]?.snacks||[]).map((snack, index) => (
+              {mealPlan[selectedDay].snacks.map((snack, index) => (
                 <div key={index} className="snack-card">
                   <div className="snack-actions">
                     <button className="edit-snack-btn" onClick={() => handleEditSnack(index)}>
@@ -691,6 +796,83 @@ const MealPlanner = ({ userData, setUserData }) => {
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share Modal */}
+      {showShareModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3 className="modal-title">Share Meal Plan</h3>
+              <button className="close-modal-btn" onClick={() => setShowShareModal(false)}>
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleShareSubmit}>
+              <div className="form-group">
+                <label htmlFor="email" className="form-label">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  id="email"
+                  className="form-input"
+                  value={shareEmail}
+                  onChange={(e) => setShareEmail(e.target.value)}
+                  placeholder="Enter recipient's email"
+                  required
+                />
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn btn-outline" onClick={() => setShowShareModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Share Meal Plan
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Export Modal */}
+      {showExportModal && (
+        <div className="modal-overlay">
+          <div className="modal-content">
+            <div className="modal-header">
+              <h3 className="modal-title">Export Meal Plan</h3>
+              <button className="close-modal-btn" onClick={() => setShowExportModal(false)}>
+                &times;
+              </button>
+            </div>
+            <form onSubmit={handleExportSubmit}>
+              <div className="form-group">
+                <label htmlFor="format" className="form-label">
+                  Export Format
+                </label>
+                <select
+                  id="format"
+                  className="form-input"
+                  value={exportFormat}
+                  onChange={(e) => setExportFormat(e.target.value)}
+                >
+                  <option value="pdf">PDF</option>
+                  <option value="csv">CSV</option>
+                  <option value="json">JSON</option>
+                </select>
+              </div>
+              <div className="form-actions">
+                <button type="button" className="btn btn-outline" onClick={() => setShowExportModal(false)}>
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Export
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}

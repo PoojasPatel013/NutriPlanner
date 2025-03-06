@@ -1,7 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { Utensils, Droplet, LineChart, Apple } from 'lucide-react'
+import { Utensils, Droplet, LineChart, Apple } from "lucide-react"
 import { generateAIRecommendation } from "../utils/ai-service"
 import "./DashboardHome.css"
 
@@ -30,16 +30,19 @@ const DashboardHome = ({ userData }) => {
     if (savedMeals) {
       const parsedMeals = JSON.parse(savedMeals)
       setRecentMeals(parsedMeals)
-      
+
       // Calculate today's nutrition from meals
-      const totals = parsedMeals.reduce((acc, meal) => {
-        acc.calories += meal.calories
-        acc.protein += meal.protein || 0
-        acc.carbs += meal.carbs || 0
-        acc.fat += meal.fat || 0
-        return acc
-      }, { calories: 0, protein: 0, carbs: 0, fat: 0 })
-      
+      const totals = parsedMeals.reduce(
+        (acc, meal) => {
+          acc.calories += meal.calories
+          acc.protein += meal.protein || 0
+          acc.carbs += meal.carbs || 0
+          acc.fat += meal.fat || 0
+          return acc
+        },
+        { calories: 0, protein: 0, carbs: 0, fat: 0 },
+      )
+
       setTodayStats(totals)
     }
 
@@ -50,10 +53,10 @@ const DashboardHome = ({ userData }) => {
     } else {
       // Initialize with empty data for the past week
       const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
-      const initialProgress = days.map(day => ({
+      const initialProgress = days.map((day) => ({
         day,
         calories: 0,
-        goal: userData?.calorieGoal || 2000
+        goal: userData?.calorieGoal || 2000,
       }))
       setWeeklyProgress(initialProgress)
       localStorage.setItem("weeklyProgress", JSON.stringify(initialProgress))
@@ -84,6 +87,11 @@ const DashboardHome = ({ userData }) => {
     localStorage.setItem("waterIntake", newIntake.toString())
   }
 
+  const handleResetWater = () => {
+    setWaterIntake(0)
+    localStorage.setItem("waterIntake", "0")
+  }
+
   const handleAddMeal = () => {
     // This would typically open a modal to add a meal
     // For now, we'll just add a sample meal
@@ -94,36 +102,81 @@ const DashboardHome = ({ userData }) => {
       protein: 5,
       carbs: 20,
       fat: 5,
-      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-      items: ["Granola Bar"]
+      time: new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+      items: ["Granola Bar"],
     }
-    
+
     const updatedMeals = [newMeal, ...recentMeals].slice(0, 5) // Keep only the 5 most recent meals
     setRecentMeals(updatedMeals)
     localStorage.setItem("todayMeals", JSON.stringify(updatedMeals))
-    
+
     // Update today's stats
-    setTodayStats(prev => ({
+    setTodayStats((prev) => ({
       calories: prev.calories + newMeal.calories,
       protein: prev.protein + (newMeal.protein || 0),
       carbs: prev.carbs + (newMeal.carbs || 0),
-      fat: prev.fat + (newMeal.fat || 0)
+      fat: prev.fat + (newMeal.fat || 0),
     }))
-    
+
     // Update weekly progress for today
     const today = new Date().getDay()
     const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     const todayName = dayNames[today]
-    
-    const updatedProgress = weeklyProgress.map(day => {
+
+    const updatedProgress = weeklyProgress.map((day) => {
       if (day.day === todayName) {
         return { ...day, calories: day.calories + newMeal.calories }
       }
       return day
     })
-    
+
     setWeeklyProgress(updatedProgress)
     localStorage.setItem("weeklyProgress", JSON.stringify(updatedProgress))
+  }
+
+  const handleClearMeals = () => {
+    if (window.confirm("Are you sure you want to clear all meals for today?")) {
+      setRecentMeals([])
+      localStorage.setItem("todayMeals", JSON.stringify([]))
+
+      // Reset today's stats
+      setTodayStats({
+        calories: 0,
+        protein: 0,
+        carbs: 0,
+        fat: 0,
+      })
+
+      // Update weekly progress for today
+      const today = new Date().getDay()
+      const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+      const todayName = dayNames[today]
+
+      const updatedProgress = weeklyProgress.map((day) => {
+        if (day.day === todayName) {
+          return { ...day, calories: 0 }
+        }
+        return day
+      })
+
+      setWeeklyProgress(updatedProgress)
+      localStorage.setItem("weeklyProgress", JSON.stringify(updatedProgress))
+    }
+  }
+
+  const handleRefreshRecommendation = async () => {
+    setIsLoading(true)
+    try {
+      const aiRecommendation = await generateAIRecommendation(userData)
+      setRecommendation(aiRecommendation)
+    } catch (error) {
+      console.error("Error fetching AI recommendation:", error)
+      setRecommendation(
+        "Based on your profile and goals, I recommend focusing on protein-rich foods and staying hydrated throughout the day. Consider adding more leafy greens to your meals for essential nutrients.",
+      )
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const calculateProgress = (current, goal) => {
@@ -239,6 +292,9 @@ const DashboardHome = ({ userData }) => {
             <button className="btn btn-primary add-water-btn" onClick={handleAddWater}>
               Add Glass
             </button>
+            <button className="btn btn-outline reset-water-btn" onClick={handleResetWater}>
+              Reset
+            </button>
           </div>
         </div>
 
@@ -248,6 +304,9 @@ const DashboardHome = ({ userData }) => {
             <div className="dashboard-card-icon">
               <Apple size={18} />
             </div>
+            <button className="btn btn-outline btn-sm refresh-btn" onClick={handleRefreshRecommendation}>
+              Refresh
+            </button>
           </div>
 
           <div className="ai-recommendation">
@@ -262,7 +321,12 @@ const DashboardHome = ({ userData }) => {
         <div className="dashboard-card meals-card">
           <div className="dashboard-card-header">
             <h3 className="dashboard-card-title">Recent Meals</h3>
-            <button className="btn btn-outline btn-sm" onClick={handleAddMeal}>Add Meal</button>
+            <button className="btn btn-outline btn-sm" onClick={handleAddMeal}>
+              Add Meal
+            </button>
+            <button className="btn btn-outline btn-sm danger-btn" onClick={handleClearMeals}>
+              Clear
+            </button>
           </div>
 
           <div className="meals-list">
@@ -282,7 +346,9 @@ const DashboardHome = ({ userData }) => {
             ) : (
               <div className="empty-meals">
                 <p>No meals logged today</p>
-                <button className="btn btn-primary btn-sm" onClick={handleAddMeal}>Log your first meal</button>
+                <button className="btn btn-primary btn-sm" onClick={handleAddMeal}>
+                  Log your first meal
+                </button>
               </div>
             )}
           </div>
@@ -317,3 +383,4 @@ const DashboardHome = ({ userData }) => {
 }
 
 export default DashboardHome
+

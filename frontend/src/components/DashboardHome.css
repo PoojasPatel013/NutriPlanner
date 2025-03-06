@@ -1,302 +1,334 @@
 .dashboard-home {
-    width: 100%;
-  }
-  
+  width: 100%;
+}
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+}
+
+.summary-card {
+  grid-column: span 2;
+}
+
+.water-card {
+  grid-column: span 1;
+}
+
+.ai-card {
+  grid-column: span 3;
+}
+
+.meals-card {
+  grid-column: span 2;
+}
+
+.progress-card {
+  grid-column: span 1;
+}
+
+.nutrition-summary {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.nutrition-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.nutrition-info {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.875rem;
+}
+
+.nutrition-label {
+  font-weight: 500;
+}
+
+.nutrition-value {
+  color: var(--foreground);
+  opacity: 0.8;
+}
+
+.progress-bar {
+  height: 8px;
+  background-color: var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background-color: var(--primary);
+  border-radius: 4px;
+  transition: width 0.3s ease;
+}
+
+.protein-fill {
+  background-color: #3b82f6;
+}
+
+.carbs-fill {
+  background-color: #f59e0b;
+}
+
+.fat-fill {
+  background-color: #10b981;
+}
+
+.water-tracker {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.water-visual {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+}
+
+.water-glasses {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: center;
+}
+
+.water-glass {
+  width: 24px;
+  height: 32px;
+  border-radius: 0 0 12px 12px;
+  border: 2px solid #60a5fa;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.water-glass.filled {
+  background-color: #60a5fa;
+  box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
+}
+
+.water-count {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.water-amount {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #60a5fa;
+}
+
+.water-unit {
+  font-size: 0.875rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.add-water-btn {
+  align-self: center;
+  background-color: #60a5fa;
+}
+
+.add-water-btn:hover {
+  background-color: #3b82f6;
+}
+
+.reset-water-btn {
+  margin-left: 0.5rem;
+  background-color: transparent;
+  border: 1px solid var(--border);
+}
+
+.danger-btn {
+  color: #ef4444;
+  border-color: #ef4444;
+}
+
+.danger-btn:hover {
+  background-color: rgba(239, 68, 68, 0.1);
+}
+
+.ai-recommendation {
+  padding: 1rem;
+  background-color: rgba(79, 70, 229, 0.1);
+  border-radius: var(--radius);
+  border-left: 4px solid var(--primary);
+}
+
+.loading-text {
+  font-style: italic;
+  opacity: 0.7;
+}
+
+.recommendation-text {
+  line-height: 1.6;
+}
+
+.meals-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.meal-item {
+  padding: 1rem;
+  border-radius: var(--radius);
+  background-color: var(--background);
+  border: 1px solid var(--border);
+}
+
+.meal-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.meal-name {
+  font-weight: 600;
+  margin: 0;
+}
+
+.meal-time {
+  font-size: 0.75rem;
+  color: var(--foreground);
+  opacity: 0.7;
+}
+
+.meal-details {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.meal-foods {
+  font-size: 0.875rem;
+  margin: 0;
+  opacity: 0.8;
+}
+
+.meal-calories {
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--primary);
+}
+
+.weekly-chart {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  height: 200px;
+  padding-top: 1rem;
+}
+
+.chart-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.bar-container {
+  width: 24px;
+  height: 150px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  margin-bottom: 0.5rem;
+}
+
+.bar-fill {
+  width: 100%;
+  background-color: var(--primary-light);
+  border-radius: 4px 4px 0 0;
+  transition: height 0.3s ease;
+}
+
+.bar-fill.over-goal {
+  background-color: #ef4444;
+}
+
+.goal-line {
+  position: absolute;
+  width: 36px;
+  height: 2px;
+  background-color: #f59e0b;
+  left: -6px;
+}
+
+.bar-label {
+  font-size: 0.75rem;
+  font-weight: 500;
+}
+
+.btn-sm {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.refresh-btn {
+  margin-left: auto;
+  margin-right: 0.5rem;
+}
+
+.dashboard-card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.dashboard-card-title {
+  margin-right: auto;
+}
+
+@media (max-width: 1024px) {
   .dashboard-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
   }
-  
+
   .summary-card {
     grid-column: span 2;
   }
-  
+
   .water-card {
     grid-column: span 1;
   }
-  
+
   .ai-card {
-    grid-column: span 3;
-  }
-  
-  .meals-card {
     grid-column: span 2;
   }
-  
+
+  .meals-card {
+    grid-column: span 1;
+  }
+
   .progress-card {
     grid-column: span 1;
   }
-  
-  .nutrition-summary {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
   }
-  
-  .nutrition-item {
-    display: flex;
-    flex-direction: column;
-    gap: 0.5rem;
+
+  .summary-card,
+  .water-card,
+  .ai-card,
+  .meals-card,
+  .progress-card {
+    grid-column: span 1;
   }
-  
-  .nutrition-info {
-    display: flex;
-    justify-content: space-between;
-    font-size: 0.875rem;
-  }
-  
-  .nutrition-label {
-    font-weight: 500;
-  }
-  
-  .nutrition-value {
-    color: var(--foreground);
-    opacity: 0.8;
-  }
-  
-  .progress-bar {
-    height: 8px;
-    background-color: var(--border);
-    border-radius: 4px;
-    overflow: hidden;
-  }
-  
-  .progress-bar-fill {
-    height: 100%;
-    background-color: var(--primary);
-    border-radius: 4px;
-    transition: width 0.3s ease;
-  }
-  
-  .protein-fill {
-    background-color: #3b82f6;
-  }
-  
-  .carbs-fill {
-    background-color: #f59e0b;
-  }
-  
-  .fat-fill {
-    background-color: #10b981;
-  }
-  
-  .water-tracker {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .water-visual {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1rem;
-  }
-  
-  .water-glasses {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-    justify-content: center;
-  }
-  
-  .water-glass {
-    width: 24px;
-    height: 32px;
-    border-radius: 0 0 12px 12px;
-    border: 2px solid #60a5fa;
-    position: relative;
-    transition: all 0.3s ease;
-  }
-  
-  .water-glass.filled {
-    background-color: #60a5fa;
-    box-shadow: 0 0 8px rgba(96, 165, 250, 0.5);
-  }
-  
-  .water-count {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .water-amount {
-    font-size: 2rem;
-    font-weight: 700;
-    color: #60a5fa;
-  }
-  
-  .water-unit {
-    font-size: 0.875rem;
-    color: var(--foreground);
-    opacity: 0.7;
-  }
-  
-  .add-water-btn {
-    align-self: center;
-    background-color: #60a5fa;
-  }
-  
-  .add-water-btn:hover {
-    background-color: #3b82f6;
-  }
-  
-  .ai-recommendation {
-    padding: 1rem;
-    background-color: rgba(79, 70, 229, 0.1);
-    border-radius: var(--radius);
-    border-left: 4px solid var(--primary);
-  }
-  
-  .loading-text {
-    font-style: italic;
-    opacity: 0.7;
-  }
-  
-  .recommendation-text {
-    line-height: 1.6;
-  }
-  
-  .meals-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-  }
-  
-  .meal-item {
-    padding: 1rem;
-    border-radius: var(--radius);
-    background-color: var(--background);
-    border: 1px solid var(--border);
-  }
-  
-  .meal-info {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.5rem;
-  }
-  
-  .meal-name {
-    font-weight: 600;
-    margin: 0;
-  }
-  
-  .meal-time {
-    font-size: 0.75rem;
-    color: var(--foreground);
-    opacity: 0.7;
-  }
-  
-  .meal-details {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-  
-  .meal-foods {
-    font-size: 0.875rem;
-    margin: 0;
-    opacity: 0.8;
-  }
-  
-  .meal-calories {
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: var(--primary);
-  }
-  
-  .weekly-chart {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    height: 200px;
-    padding-top: 1rem;
-  }
-  
-  .chart-bar {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 100%;
-  }
-  
-  .bar-container {
-    width: 24px;
-    height: 150px;
-    position: relative;
-    display: flex;
-    align-items: flex-end;
-    margin-bottom: 0.5rem;
-  }
-  
-  .bar-fill {
-    width: 100%;
-    background-color: var(--primary-light);
-    border-radius: 4px 4px 0 0;
-    transition: height 0.3s ease;
-  }
-  
-  .bar-fill.over-goal {
-    background-color: #ef4444;
-  }
-  
-  .goal-line {
-    position: absolute;
-    width: 36px;
-    height: 2px;
-    background-color: #f59e0b;
-    left: -6px;
-  }
-  
-  .bar-label {
-    font-size: 0.75rem;
-    font-weight: 500;
-  }
-  
-  .btn-sm {
-    padding: 0.25rem 0.5rem;
-    font-size: 0.75rem;
-  }
-  
-  @media (max-width: 1024px) {
-    .dashboard-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .summary-card {
-      grid-column: span 2;
-    }
-    
-    .water-card {
-      grid-column: span 1;
-    }
-    
-    .ai-card {
-      grid-column: span 2;
-    }
-    
-    .meals-card {
-      grid-column: span 1;
-    }
-    
-    .progress-card {
-      grid-column: span 1;
-    }
-  }
-  
-  @media (max-width: 768px) {
-    .dashboard-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .summary-card,
-    .water-card,
-    .ai-card,
-    .meals-card,
-    .progress-card {
-      grid-column: span 1;
-    }
-  }
-  
+}
+
